@@ -1,56 +1,73 @@
 #include <cstdio>
 #include "raylib.h"
 
+#define CANVAS_WIDTH 640
+#define CANVAS_HEIGHT 480
+
 int main()
 {
-    const int width = 640;
-    const int height = 480;
+    //  Circle Start Point
+    int circleX = CANVAS_WIDTH * 0.2f;
+    int circleY = CANVAS_HEIGHT / 2;
 
-    InitWindow(width, height, "Geometry War");
-
-    int circleX = width * 0.2f;
-    int circleY = height / 2;
-
-    int speed = 10;
-    int challengeSpeed = 10;
     int level = 0;
 
+    int circleSpeed = 10;
+    int circleRadius = 24;
+
+    int squareSpeed = 10;
     int rectPositionY = 0;
+    bool IsGoindDown = true;
+
+    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Geometry War");
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
-        if (IsKeyDown(KEY_D) && circleX < width)
+        //  USER CONTROL INTERFACE
+        if (IsKeyDown(KEY_D) && circleX < CANVAS_WIDTH - circleRadius)
         {
-            circleX += speed;
+            circleX += circleSpeed;
         }
-        if (IsKeyDown(KEY_A) && circleX > 0)
+        if (IsKeyDown(KEY_A) && circleX > 0 + circleRadius)
         {
-            circleX -= speed;
+            circleX -= circleSpeed;
         }
-        if (IsKeyDown(KEY_W) && circleY > 0)
+        if (IsKeyDown(KEY_W) && circleY > 0 + circleRadius)
         {
-            circleY -= speed;
+            circleY -= circleSpeed;
         }
-        if (IsKeyDown(KEY_S) && circleY < height)
+        if (IsKeyDown(KEY_S) && circleY < CANVAS_HEIGHT - circleRadius)
         {
-            circleY += speed;
-        }
-
-        rectPositionY += challengeSpeed;
-
-        // RESET RECT POSITION
-        if (rectPositionY == height)
-        {
-            rectPositionY = 0;
+            circleY += circleSpeed;
         }
 
+        //  SQUARE BEHAVIOR
+        if (IsGoindDown)
+        {
+            rectPositionY += squareSpeed;
+            if (rectPositionY == CANVAS_HEIGHT)
+            {
+                IsGoindDown = !IsGoindDown;
+            }
+        }
+
+        if (!IsGoindDown)
+        {
+            rectPositionY -= squareSpeed;
+            if (rectPositionY == 0)
+            {
+                IsGoindDown = !IsGoindDown;
+            }
+        }
+
+        //  CANVAS DRAWNING
         BeginDrawing();
         ClearBackground(WHITE); //  To avoid Black Flickering
 
-        DrawCircle(circleX, circleY, 25, BLUE);
+        DrawCircle(circleX, circleY, circleRadius, BLUE);
 
-        DrawRectangle(width / 5 * 4, rectPositionY, 50, 50, RED);
+        DrawRectangle(CANVAS_WIDTH / 5 * 4, rectPositionY, 50, 50, RED);
 
         DrawText(TextFormat("Level: %i", level), 20, 2, 22, BLACK);
 
