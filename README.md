@@ -1,6 +1,7 @@
 # Geometry Game
 
-Using Raylib
+- Using Raylib
+- Procedural programming
 
 ## Final Result
 

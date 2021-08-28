@@ -1,75 +1,87 @@
-#include <cstdio>
 #include "raylib.h"
 
 #define CANVAS_WIDTH 640
 #define CANVAS_HEIGHT 480
 
+void DrawGameWindow()
+{
+    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Geometry War");
+}
+
 int main()
 {
-    //  Circle Start Point
-    int circleX = CANVAS_WIDTH * 0.2f;
-    int circleY = CANVAS_HEIGHT / 2;
+    DrawGameWindow();
 
-    int level = 0;
-
-    int circleSpeed = 10;
+    int circlePositionX = CANVAS_WIDTH * 0.2f;
+    int circlePositionY = CANVAS_HEIGHT / 2;
     int circleRadius = 24;
+    int playerSpeed = 10;
 
-    int squareSpeed = 10;
-    int rectPositionY = 0;
-    bool IsGoindDown = true;
+    int enemyPositionX = 500;
+    int enemyPostionY = 0;
+    int enemySquareSize = 50;
+    int enemySpeed = 5;
 
-    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Geometry War");
+    int safetySquareSize = 100;
+    int safetyPositionX = CANVAS_WIDTH - (safetySquareSize / 2);
+    int safetyPositionY = (CANVAS_HEIGHT / 2) - (safetySquareSize / 2);
+
+    bool catchByEnemy = false;
+    bool arriveSafety = false;
 
     SetTargetFPS(60);
-    while (!WindowShouldClose())
+    while (WindowShouldClose() == false)
     {
-        //  USER CONTROL INTERFACE
-        if (IsKeyDown(KEY_D) && circleX < CANVAS_WIDTH - circleRadius)
-        {
-            circleX += circleSpeed;
-        }
-        if (IsKeyDown(KEY_A) && circleX > 0 + circleRadius)
-        {
-            circleX -= circleSpeed;
-        }
-        if (IsKeyDown(KEY_W) && circleY > 0 + circleRadius)
-        {
-            circleY -= circleSpeed;
-        }
-        if (IsKeyDown(KEY_S) && circleY < CANVAS_HEIGHT - circleRadius)
-        {
-            circleY += circleSpeed;
-        }
-
-        //  SQUARE BEHAVIOR
-        if (IsGoindDown)
-        {
-            rectPositionY += squareSpeed;
-            if (rectPositionY == CANVAS_HEIGHT)
-            {
-                IsGoindDown = !IsGoindDown;
-            }
-        }
-
-        if (!IsGoindDown)
-        {
-            rectPositionY -= squareSpeed;
-            if (rectPositionY == 0)
-            {
-                IsGoindDown = !IsGoindDown;
-            }
-        }
-
-        //  CANVAS DRAWNING
         BeginDrawing();
-        ClearBackground(WHITE); //  To avoid Black Flickering
+        ClearBackground(WHITE);
 
-        DrawCircle(circleX, circleY, circleRadius, BLUE);
+        if (catchByEnemy)
+        {
+            DrawText("Game Over!", 180, 200, 60, RED);
+        }
+        else if (arriveSafety)
+        {
+            DrawText("Level UP", 400, 200, 20, BLUE);
+        }
+        else
+        {
+            int leftCircleX = circlePositionX - circleRadius;
+            int rightCircleY = circlePositionX + circleRadius;
+            int upCircleY = circlePositionY - circleRadius;
+            int botCircleY = circlePositionY + circleRadius;
 
-        DrawRectangle(CANVAS_WIDTH / 5 * 4, rectPositionY, 50, 50, RED);
+            int leftEnemyX = enemyPositionX;
+            int rightEnemyX = enemyPositionX + enemySquareSize;
+            int upEnemyY = enemyPostionY;
+            int botEnemyY = enemyPostionY + enemySquareSize;
+            catchByEnemy =
+                (botEnemyY >= upCircleY) &&
+                (upEnemyY <= botCircleY) &&
+                (rightEnemyX >= leftCircleX) &&
+                (leftEnemyX <= rightCircleY);
 
-        DrawText(TextFormat("Level: %i", level), 20, 2, 22, BLACK);
+            int leftSafetyX = safetyPositionX;
+            arriveSafety = (leftSafetyX <= rightCircleY);
+
+            DrawCircle(circlePositionX, circlePositionY, circleRadius, BLUE);
+            DrawRectangle(enemyPositionX, enemyPostionY, enemySquareSize, enemySquareSize, RED);
+            DrawRectangle(safetyPositionX, safetyPositionY, safetySquareSize, safetySquareSize, BLUE);
+
+            enemyPostionY += enemySpeed;
+            if (enemyPostionY > CANVAS_HEIGHT || enemyPostionY < 0)
+            {
+                enemySpeed = -enemySpeed;
+            }
+
+            if (IsKeyDown(KEY_D) && circlePositionX < CANVAS_WIDTH - circleRadius)
+            {
+                circlePositionX += playerSpeed;
+            }
+            if (IsKeyDown(KEY_A) && circlePositionX > 0 + circleRadius)
+            {
+                circlePositionX -= playerSpeed;
+            }
+        }
 
         EndDrawing();
     }
