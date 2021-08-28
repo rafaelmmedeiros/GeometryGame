@@ -12,8 +12,11 @@ int main()
 {
     DrawGameWindow();
 
-    int circlePositionX = CANVAS_WIDTH * 0.2f;
-    int circlePositionY = CANVAS_HEIGHT / 2;
+    int circleStartPositionX = CANVAS_WIDTH * 0.2f;
+    int circleStartPositionY = CANVAS_HEIGHT / 2;
+
+    int circlePositionX = circleStartPositionX;
+    int circlePositionY = circleStartPositionY;
     int circleRadius = 24;
     int playerSpeed = 10;
 
@@ -29,6 +32,8 @@ int main()
     bool catchByEnemy = false;
     bool arriveSafety = false;
 
+    int level = 0;
+
     SetTargetFPS(60);
     while (WindowShouldClose() == false)
     {
@@ -38,10 +43,6 @@ int main()
         if (catchByEnemy)
         {
             DrawText("Game Over!", 180, 200, 60, RED);
-        }
-        else if (arriveSafety)
-        {
-            DrawText("Level UP", 400, 200, 20, BLUE);
         }
         else
         {
@@ -63,9 +64,26 @@ int main()
             int leftSafetyX = safetyPositionX;
             arriveSafety = (leftSafetyX <= rightCircleY);
 
+            if (arriveSafety)
+            {
+                level++;
+                circlePositionX = circleStartPositionX;
+                circlePositionY = circleStartPositionY;
+                if (enemySpeed > 0)
+                {
+                    enemySpeed++;
+                }
+                else
+                {
+                    enemySpeed--;
+                }
+            }
+
             DrawCircle(circlePositionX, circlePositionY, circleRadius, BLUE);
             DrawRectangle(enemyPositionX, enemyPostionY, enemySquareSize, enemySquareSize, RED);
             DrawRectangle(safetyPositionX, safetyPositionY, safetySquareSize, safetySquareSize, BLUE);
+
+            DrawText(TextFormat("Level: %i", level), 10, 10, 20, LIME);
 
             enemyPostionY += enemySpeed;
             if (enemyPostionY > CANVAS_HEIGHT || enemyPostionY < 0)
