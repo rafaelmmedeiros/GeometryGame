@@ -5,4 +5,4 @@
 
 ## Final Result
 
-![Alt Text] (https://github.com/rafaelmmedeiros/GeometryGame/blob/master/print/Running.gif)
+![Alt Text](https://github.com/rafaelmmedeiros/GeometryGame/blob/master/print/Running.gif)
