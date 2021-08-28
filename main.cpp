@@ -8,10 +8,14 @@ int main()
 
     InitWindow(width, height, "Geometry War");
 
-    while (true)
+    while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(WHITE); //  To avoid Black Flickering
+
+        DrawCircle(width / 2, height / 2, 150, BLUE);
+        DrawCircle(width / 2, height / 2, 100, RED);
+
         EndDrawing();
     }
 }
