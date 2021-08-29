@@ -100,7 +100,7 @@ int main()
                 circlePositionX -= playerSpeed;
             }
         }
-        //
+        
         EndDrawing();
     }
 }
